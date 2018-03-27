@@ -1,0 +1,337 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>openweb</groupId>
+  <artifactId>OpenWebMaven</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>OpenWebMaven</name>
+  <description>Alfred's Project</description>
+  
+  <properties>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.plugin>3.7.0</maven.compiler.plugin>
+    <maven.compiler.source>9</maven.compiler.source>
+    <maven.compiler.target>9</maven.compiler.target>
+  </properties>
+  
+  <dependencies>
+  
+    <!-- Alfredo's dependencies in local file (dirty solution)-->
+    <!-- @see http://roufid.com/3-ways-to-add-local-jar-to-maven-project/ -->
+    <dependency> 
+	  <groupId>alfred.cullera</groupId>
+	  <artifactId>temaestany</artifactId>
+	  <version>1.0</version>
+	  <scope>system</scope>
+	  <!--@see http://dantesque-jsf.blogspot.com.es/2017/12/7-jsf-including-additional-files-in.html#p3-->
+	  <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/temaestany.jar</systemPath>
+    </dependency>
+     
+    <!--  TOMCAT Servlet-api -->
+    <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-servlet-api -->
+    <!-- 
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-servlet-api</artifactId>
+      <version>9.0.1</version>
+    </dependency>
+    -->
+    
+    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!--  Expression EL evaluation -->
+    <!-- https://mvnrepository.com/artifact/javax.el/javax.el-api -->
+    <dependency>
+      <groupId>javax.el</groupId>
+      <artifactId>javax.el-api</artifactId>
+      <version>3.0.1-b04</version>
+    </dependency>
+    
+    
+       
+    <!--  JSF 2.3.3 OracleImplementation -->
+    <!-- https://mvnrepository.com/artifact/org.glassfish/javax.faces -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.faces</artifactId>
+      <version>2.3.3</version>
+    </dependency>
+    
+
+    <!--  Primefaces -->
+    <dependency>
+      <groupId>org.primefaces</groupId>
+      <artifactId>primefaces</artifactId>
+      <version>6.1</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.primefaces.themes/all-themes -->
+    <dependency>
+      <groupId>org.primefaces.themes</groupId>
+      <artifactId>all-themes</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.primefaces.themes/casablanca -->
+    <!-- 
+    <dependency>
+      <groupId>org.primefaces.themes</groupId>
+      <artifactId>casablanca</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+	-->
+    
+    
+    <!-- https://mvnrepository.com/artifact/org.primefaces.extensions/all-themes -->
+    <!-- 
+    <dependency>
+      <groupId>org.primefaces.extensions</groupId>
+      <artifactId>all-themes</artifactId>
+      <version>1.0.8</version>
+      <type>pom</type>
+    </dependency>
+    -->    
+    <!-- Weld CDI for Tomcat with all dependencies included (does not fulfill all capabilities !!!) -->
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-shaded</artifactId>
+      <version>3.0.1.Final</version>
+    </dependency>
+    
+        
+    <!-- Validation API Optional -->
+    <!-- 
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>2.0.0.Final</version>
+    </dependency>
+     -->
+         
+     
+    <!-- JPA & Postgres -->
+    <!-- Javassist required by Hibernate in some computers -->
+    <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
+     <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.22.0-GA</version>
+    </dependency>
+    
+    <!-- JPA 2.1 Provider -->
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.2.12.Final</version>
+    </dependency>
+    
+    <!-- Envers for auditing the database -->
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-envers -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+      <version>5.2.12.Final</version>
+    </dependency>
+    
+    <!-- Hibernate Testing !!! -->
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-testing -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-testing</artifactId>
+      <version>5.2.12.Final</version>
+      <scope>test</scope>
+    </dependency>
+    
+    
+    <!-- POSTGRES XUNGO!!!!!!! -->
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.1.4</version>
+    </dependency>  
+     
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <!-- 
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>9.4.1211</version>
+    </dependency>
+    --> 
+    
+    <!-- Hibernate Bean Validator Optional -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>6.0.4.Final</version>
+    </dependency>  
+    
+    <!--  Lombok for setters and getters -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.16.18</version>
+    </dependency>
+    
+       
+    <!-- Apache commons codec for md5 digest -->
+    <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.11</version>
+    </dependency>
+    
+    
+    
+    <!-- Apache commons DBCP Connection Pooling system -->
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+    <!-- 
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+     -->
+     
+    <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-dbcp</artifactId>
+      <version>9.0.1</version>
+    </dependency>
+    
+    
+    <!-- Apache commons lang3 with stringUtils --> 
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.7</version>
+    </dependency>
+    
+    <!-- Apache commons BeanUtils --> 
+    <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+	<dependency>
+    	<groupId>commons-beanutils</groupId>
+    	<artifactId>commons-beanutils</artifactId>
+    	<version>1.9.3</version>
+	</dependency>
+	
+	<!-- Java CSV csvreader & csvwriter -->
+	<!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
+    <dependency>
+      <groupId>net.sourceforge.javacsv</groupId>
+      <artifactId>javacsv</artifactId>
+      <version>2.0</version>
+    </dependency>
+
+    <!--  Evaluate expressions Apache-commons-JEXL -->
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl3 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jexl3</artifactId>
+      <version>3.1</version>
+    </dependency>
+    
+    <!--BEGIN Java 9 references to JEE  not included in JDK9-->
+    
+    <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+        
+    <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/javax.activation/javax.activation-api -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    
+    
+    <!-- END Java 9 references to JEE  not included in JDK9-->
+
+
+
+    <!-- YAML (and JSON And XML ) dependencies -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.4</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>2.9.4</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>2.9.4</version>
+    </dependency>
+    
+    <!-- already included
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.7</version>
+    </dependency>
+    -->
+    <!-- END YAML dependencies -->
+    
+	<!--    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+     -->
+  
+  <!--  to load from primefaces maven repository !! -->
+  <!-- see https://stackoverflow.com/questions/21705509/primefaces-all-themes-v-1-0-10-installation -->
+  </dependencies>
+  <repositories>
+     <repository>
+      <id>prime-repo</id>
+      <name>PrimeFaces Maven Repository</name>
+      <url>http://repository.primefaces.org</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  
+  
+  
+  
+</project>

@@ -1,0 +1,97 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    
+    <persistence-unit name="ayto_post" transaction-type="RESOURCE_LOCAL"> 
+    	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <non-jta-data-source>java:comp/env/ayto_pos</non-jta-data-source >
+        
+        <properties>
+      		<property name="hibernate.dialect"	value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.show_sql" value="true" />				  
+       		
+       		<!-- 
+       		<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>  
+      
+      		<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/openweb" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.username" value="postgres" />
+			<property name="hibernate.connection.password" value="PostgreSQL" />    
+			-->
+			
+      </properties>
+    </persistence-unit> 
+    
+
+    
+    <persistence-unit name="log_post" transaction-type="RESOURCE_LOCAL">
+      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+      <jta-data-source>java:comp/env/log_post</jta-data-source>
+      
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
+      
+      
+      <properties>
+      		<property name="hibernate.dialect"	value="org.hibernate.dialect.PostgreSQLDialect" />
+      		<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />				  
+       		<!--  
+       		<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/> 
+            
+      		<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/logopenweb" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.username" value="postgres" />
+			<property name="hibernate.connection.password" value="PostgreSQL" /> 
+			--> 
+			
+      </properties>
+      
+      
+   </persistence-unit>
+   
+    
+   <persistence-unit name="control_post" transaction-type="RESOURCE_LOCAL">
+      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+      <!-- BEGIN: FOR Data Source in Tomcat 
+      <jta-data-source>java:comp/env/control_post</jta-data-source>
+           END:   FOR Data Source in Tomcat-->
+      
+      <class>openadmin.model.control.Access            </class>
+      <class>openadmin.model.control.Action            </class>
+      <class>openadmin.model.control.ActionViewRole    </class>
+      <class>openadmin.model.control.ClassName         </class>
+      <class>openadmin.model.control.Configuracio      </class>
+      
+      <class>openadmin.model.control.EntityAdm         </class>
+      <class>openadmin.model.control.MenuItem          </class>
+      <class>openadmin.model.control.Program           </class>
+      <class>openadmin.model.control.Role              </class>
+      <class>openadmin.model.control.SiNo              </class>
+      
+      <class>openadmin.model.control.User              </class>
+      
+      
+      
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
+      
+      <properties>
+      		<property name="hibernate.dialect"	value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />				  
+       		<!-- BEGIN: DataSource By Hibernate (NO TOMCAT) --> 
+       		<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/> 
+      
+      		<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/openweb" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.username" value="postgres" />
+			<property name="hibernate.connection.password" value="PostgreSQL" /> 
+			<!-- END:   DataSource By Hibernate (NO TOMCAT)  -->
+      </properties>
+   </persistence-unit>
+   
+
+
+</persistence>
+

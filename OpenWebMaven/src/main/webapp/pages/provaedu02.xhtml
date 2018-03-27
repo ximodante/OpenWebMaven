@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+	  xmlns:h="http://java.sun.com/jsf/html"> 
+
+<h:head>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+		<h:outputStylesheet library="css" name="index.css" />
+		<h:outputStylesheet library="css" name="indexMobil.css" media="(max-width: 800px)" />
+		<title>OpenWeb</title>
+		 		
+  </h:head> 
+  <h:body styleClass="general">
+	
+	<h:form id="form"> 
+		<p:repeat value="#{edu01.a1}" var="a1v">
+        
+            
+            <p:outputPanel>
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputText value="Id:" id="id"/>
+                    <h:outputText value="#{a1v}" id="kk" style="font-weight: bold"/>
+ 
+                    
+                </h:panelGrid>
+            </p:outputPanel>
+        
+        <hr />
+    </p:repeat>
+	</h:form>
+	
+  </h:body>
+	
+
+</html>

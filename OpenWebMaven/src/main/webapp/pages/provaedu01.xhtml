@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	
+	<h:head>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+		<h:outputStylesheet library="css" name="index.css" />
+		<h:outputStylesheet library="css" name="indexMobil.css" media="(max-width: 800px)" />
+		<title>OpenWeb</title>
+		 		
+	</h:head>
+
+	<h:body styleClass="general">
+	
+	  <h:form id="form"> 
+		<ui:repeat value="#{edu01.a1}" var="myvariable" varStatus="status">
+		  <div>
+		    #{status.index + 1}
+		    #{myvariable}
+		    <p:inputText  value="#{myvariable}" id="a" size="20" maxlength="20" placeholder="#{rscgene.usuari}"/>      
+	      </div>
+	    </ui:repeat>
+	  </h:form>
+	
+	</h:body>
+	
+
+</html>

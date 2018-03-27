@@ -1,0 +1,74 @@
+#-------------------------------------------------------------------------------------------
+# 13/01/2018
+# Test View is a template
+# Instructions to use YAML:
+#     http://sangsoonam.github.io/2017/03/13/yaml-vs-json.html
+#     http://yaml.org/spec/1.2/spec.html
+#-------------------------------------------------------------------------------------------
+# 1. General Info
+name: testView 
+
+#-------------------------------------------------------------------------------------------
+#2. Panel definition
+panels:
+  - name: main                                        # main panel 
+    lines:                                            # fields displayed in lines   
+    - [ fld01, fld02 ]  
+    - [ fld03, fld04 ]                              
+    #--------------------------------------                  
+  - name: panel01                                     # anothe panel 
+    lines:
+    - [ fld06, fld07, fld08, fld09 ]                  # fields displayed in line 2
+    - [ fld10, fld11, fld12, fld13 ]                  # fields displayed in line 3
+    #--------------------------------------
+  - name: panel02  
+    klass: Address                                            # a panel with an array ( a detail class (adresses for a person)
+#---------------------------------------------------------------------------------------------  
+#3. Tab definition
+tabs:
+  - { name: invoices   , klass: Invoice }                     # detail of invoices
+  - { name: payments   , klass: Payment }                     # detail of payments
+
+#---------------------------------------------------------------------------------------------
+#4. Additional info of Fields
+fields:
+  - { name: fld01, editor: TextEditor } 
+  - { name: fld02, editor: Keyboard }  
+
+#---------------------------------------------------------------------------------------------
+#5. Events definition (form, panel, tab and field events)
+formEvents:
+  - { event: onresize, action: class01.action01 }
+  
+panelEvents: 
+  - { event: onresize, element: main,     action: class01.action02, fields: [fld01,fld02] }
+  - { event: onresize, element: panel01,  action: class01.action03 }
+ 
+tabEvents: 
+  - { event: onresize, element: invoices, action: class02.action01, fields: [fld02,fld03] }
+  
+fieldEvents:
+  - { event: onblur,   element: fld02,    action: class03.action01, fields: [fld01,fld02] }
+  
+#---------------------------------------------------------------------------------------------
+#6. Action definition (form, panel, tab and field events)
+formActions:
+  - { name: Save,      action: class05.action01, icon: icon1.jpg, roles:[app1.admin, app1.aux]}
+  - { name: Cancel,    action: class05.action02, icon: icon2.jpg, roles:[app1.admin, app1.aux] }
+  - { name: SendEmail, action: class05.action03, icon: icon3.jpg, fields: [fld01,fld02], roles:[app1.admin, app1.aux] }
+  - { name: Insert,    action: class05.action04, icon: icon3.jpg, fields: [fld01,fld02], roles:[app1.admin, app1.aux] }
+  
+panelActions:  
+  - { name: Refresh,   element: main,    action: class05.action01, icon: icon1.jpg, fields: [fld01,fld02], roles:[app1.admin, app1.aux] } 
+  - { name: SendEmail, element: panel01, action: class01.action03, icon: icon3.jpg, fields: [fld01,fld02], roles:[app1.admin, app1.aux] }
+
+tabActions: 
+  - { name: Edit,      element: invoices, action: class02.action01, fields: [fld02,fld03], roles:[app1.admin, app1.aux] }
+
+fieldActions:
+  - { name: Shift,     element: fld02,    action: class03.action01, fields: [fld01,fld02], roles:[app1.admin] }
+  
+  
+  
+  
+  
