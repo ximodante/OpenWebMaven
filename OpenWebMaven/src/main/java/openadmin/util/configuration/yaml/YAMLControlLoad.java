@@ -31,7 +31,7 @@ import openadmin.util.lang.LangTypeEdu;
 
 
 @ToString
-public class YAMLControl implements Serializable{
+public class YAMLControlLoad implements Serializable{
 
 	private static final long serialVersionUID = 20180204L;
 	
@@ -633,11 +633,11 @@ public class YAMLControl implements Serializable{
 	
 	public static void main(String[] args) {
 		
-		YAMLControl yc=null;
+		YAMLControlLoad yc=null;
 		//1. Read YAML File
 		InputStream in = YAMLUtilsEdu.class.getResourceAsStream("/data/Application.yaml");
 		try {
-			yc = YAMLUtilsEdu.YAMLFileToObject(in, YAMLControl.class);
+			yc = YAMLUtilsEdu.YAMLFileToObject(in, YAMLControlLoad.class);
 			System.out.println(yc.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
