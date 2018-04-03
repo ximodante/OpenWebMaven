@@ -33,6 +33,15 @@ public class YAMLUser implements Serializable{
 	
 	
 	public static void main(String[] args) {
+		YAMLUser yu=new YAMLUser();
+		System.out.println(LocalDate.now().toString());
+		for (int i=1;i<1000; i++) System.out.print(i+"-");
+		System.out.println(LocalDate.now().toString());
+		for (int i=1;i<1000; i++) System.out.print(i+"-");
+		System.out.println(LocalDate.now().toString());
+		for (int i=1;i<1000; i++) System.out.print(i+"-");
+		System.out.println(LocalDate.now().toString());
+		for (int i=1;i<1000; i++) System.out.print(i+"-");
 		System.out.println(LocalDate.now().toString());
 	}
 	
