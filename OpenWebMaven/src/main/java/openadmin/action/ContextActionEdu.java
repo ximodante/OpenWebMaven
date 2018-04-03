@@ -31,6 +31,7 @@ import openadmin.model.control.EntityAdm;
 
 import openadmin.model.control.User;
 import openadmin.util.configuration.FirstControlLoadEdu;
+import openadmin.util.configuration.FirstControlLoadYAML;
 //import openadmin.util.configuration.FirstControlLoad;
 import openadmin.util.configuration.TypeEnvironment;
 import openadmin.util.configuration.TypeLanguages;
@@ -158,7 +159,8 @@ public class ContextActionEdu implements Serializable {
 			}
 			
 			//if (connControl.isEmpty(user)) FirstControlLoadEdu.PersistConfiguration();
-			else if (connControl.isEmpty(User.class)) FirstControlLoadEdu.dataLoad();
+			//else if (connControl.isEmpty(User.class)) FirstControlLoadEdu.dataLoad();
+			else if (connControl.isEmpty(User.class)) FirstControlLoadYAML.dataLoad();
 			
 		} catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IntrospectionException | RuntimeException e) {
 			

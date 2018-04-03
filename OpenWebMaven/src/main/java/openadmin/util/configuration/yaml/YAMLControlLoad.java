@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,9 +83,12 @@ public class YAMLControlLoad implements Serializable{
 	
 	private Integer orden=1;
 	
+	@Setter
 	private DaoOperationFacadeEdu connection = null; 	
-	private User firstLoadUser = new User("FirstLoader","123456","First Load User");
 	
+	/**
+	private User firstLoadUser = new User("FirstLoader","123456","First Load User");
+	*/
 	
 	// ========================================
 	// 1. Helpers
@@ -132,50 +136,58 @@ public class YAMLControlLoad implements Serializable{
 		return classNames;
 	}
 	
-	private <T extends Base> T persist(T t) {
-		T obj=connection.findObjectDescription(t);
-		if (obj==null) {
-			connection.persistObject(t);
-			// t gets its id updated with autoincrement
-			//obj=connection.findObjectDescription(t); // NO need to get id value
-			obj=t;
-		} else {
-			t.setId(obj.getId());
-			connection.updateObjectDefault(t);
-		}
-		return obj;
-	}
 	
 	
-	// ========================================
-	// 2. Control classes extraction
-	// ========================================
+	
+	// ======================================================
+	// 2. Control classes extraction and populate to DB
+	//    Also delete old configuration records from DB
+	// ======================================================
 	public void Init() {
+		LocalDateTime myDate = LocalDateTime.now();
+		
+		/**
 		//0. open connection
 		LangTypeEdu langType = new LangTypeEdu();
 		langType.changeMessageLog(TypeLanguages.es);
 		connection = new DaoJpaEdu(firstLoadUser, "control_post", (short) 0,langType);
 		
 		connection.begin();
-		
+		*/
 		//1. Users
 		this.cUsers=this.getControlUsers();
-		
+			
+		/**
 		//2. Roles
 		this.cRoles=this.getControlRoles();
 		
 		//3. Entity & Program & Access
 		this.EntityAdmProgramAccess();
 		
-		//4. Entity & Program & Access
+		
+		//4. MenuItems & ClassName & Action
 		this.MenuItemsClassNameActions();
+		
+		
 				
+		//5. Delete old configuration
+		connection.deleteOlderThan(ActionViewRole.class, myDate);
+		connection.deleteOlderThan(Access.class        , myDate);
+		connection.deleteOlderThan(Program.class       , myDate);
+		connection.deleteOlderThan(User.class          , myDate);
+		connection.deleteOlderThan(EntityAdm.class     , myDate);
+		connection.deleteOlderThan(Role.class          , myDate);
+		connection.deleteOlderThan(Action.class        , myDate);
+		connection.deleteOlderThan(MenuItem.class      , myDate);
+		connection.deleteOlderThan(ClassName.class     , myDate);
 		
+		*/
+		/**
+		
+		//5. Commit connection
 		connection.commit();
-		
-		//4. Commit connection
-		//connection.commit();
 		connection.finalize();
+		*/
 	}
 	
 	//2.1 Control Users -_> ja està
@@ -200,7 +212,7 @@ public class YAMLControlLoad implements Serializable{
 					// By default a user is active for 5 years
 					myUser.setDateEnd(myUser.getDateBegin().plusYears(5));
 				}
-				lUsers.put(myUser.getDescription(), this.persist(myUser));
+				lUsers.put(myUser.getDescription(), this.connection.persist(myUser));
 		}	}	
 		return lUsers;
 	}
@@ -215,7 +227,7 @@ public class YAMLControlLoad implements Serializable{
 					for (String sProg: ymlRole.getPrograms()) {
 						Role myRole=new Role(sProg.trim().toLowerCase()+ "." + sRol.trim().toUpperCase());
 						if (lRoles.get(myRole.getDescription()) == null)
-								lRoles.put(myRole.getDescription(), this.persist(myRole));
+								lRoles.put(myRole.getDescription(), this.connection.persist(myRole));
 		}	}	}	}
 		return lRoles;
 	}
@@ -234,7 +246,7 @@ public class YAMLControlLoad implements Serializable{
 				myEnt.setConn(ymlEnt.getConn());
 				myEnt.setIcon(ymlEnt.getIcon());
 				myEnt.setTheme(ymlEnt.getTheme());
-				this.cEntityAdms.put(myEnt.getDescription(), this.persist(myEnt));
+				this.cEntityAdms.put(myEnt.getDescription(), this.connection.persist(myEnt));
 				
 				if(ymlEnt.getPrograms() !=null) {
 					for (YAMLProgram ymlProg: ymlEnt.getPrograms()) {
@@ -242,7 +254,7 @@ public class YAMLControlLoad implements Serializable{
 						// Add program
 						Program myProg=new Program (ymlProg.getName().trim().toLowerCase());
 						myProg.setIcon(ymlProg.getIcon());
-						this.cPrograms.put(myProg.getDescription(), this.persist(myProg));
+						this.cPrograms.put(myProg.getDescription(), this.connection.persist(myProg));
 						
 						if(ymlProg.getAlloweds() !=null) {
 							for (YAMLAllowed ymlAllow: ymlProg.getAlloweds()) {
@@ -254,7 +266,7 @@ public class YAMLControlLoad implements Serializable{
 									myAcc.setRole(this.cRoles.get(myProg.getDescription().trim().toLowerCase()+"."+ymlAllow.getRole().trim().toUpperCase()));
 									myAcc.setDescription("");
 									System.out.println("------ACCESS: EntityAdm:" + myEnt.getDescription() + " - User:" + sUser + " - Program:"+ myProg.getDescription() + " - Role:"+ ymlAllow.getRole());
-									this.cAccesses.add(this.persist(myAcc));
+									this.cAccesses.add(this.connection.persist(myAcc));
 									
 		
 		
@@ -286,7 +298,7 @@ public class YAMLControlLoad implements Serializable{
 		
 		// Add ClassName
 		myClass.setDescription(ymlMenu.getClassName().trim());
-		this.cClassNames.put(myClass.getDescription(), this.persist(myClass));
+		this.cClassNames.put(myClass.getDescription(), this.connection.persist(myClass));
 		
 		// Add MenuItems
 		myMenu.setClassName(myClass);
@@ -296,7 +308,7 @@ public class YAMLControlLoad implements Serializable{
 		myMenu.setTypeNode("p");
 		myMenu.setViewType(ymlMenu.getViewType());
 		myMenu.setDescription((myClass.getDescription().trim() + "_" + ymlMenu.getViewType().trim()).replaceAll("\\.", "_").toLowerCase());
-		this.cMenuItems.put(myMenu.getDescription(), this.persist(myMenu));
+		this.cMenuItems.put(myMenu.getDescription(), this.connection.persist(myMenu));
 		if(ymlMenu.getMenuItems() !=null) {
 			for (YAMLMenuItem ymlMenu1 : ymlMenu.getMenuItems()) {
 				if (ymlMenu.getViewType().trim().toLowerCase().equals("submenu")) {
@@ -319,7 +331,7 @@ public class YAMLControlLoad implements Serializable{
 		
 		// Add ClassName
 		myClass.setDescription(ymlMenu.getClassName().trim());
-		this.cClassNames.put(myClass.getDescription(), this.persist(myClass));
+		this.cClassNames.put(myClass.getDescription(), this.connection.persist(myClass));
 		
 		// Add MenuItems
 		myMenu.setClassName(myClass);
@@ -328,7 +340,7 @@ public class YAMLControlLoad implements Serializable{
 		myMenu.setOrden(this.orden++);
 		myMenu.setTypeNode(ymlMenu.getViewType());
 		myMenu.setDescription((myClass.getDescription().trim() + "_" + ymlMenu.getViewType().trim()).replaceAll(".", "_").toLowerCase());
-		this.cMenuItems.put(myMenu.getDescription(), this.persist(myMenu));
+		this.cMenuItems.put(myMenu.getDescription(), this.connection.persist(myMenu));
 		
 		// Add default actions
 		if(ymlMenu.isDefaultActions() ) 
@@ -356,7 +368,7 @@ public class YAMLControlLoad implements Serializable{
 		myAct.setClassName(myClass);
 		myAct.setGrup(ymlAct.getGroup());
 		myAct.setIcon(ymlAct.getIcon());
-		this.cActions.put(myAct.getDescription(), this.persist(myAct));
+		this.cActions.put(myAct.getDescription(), this.connection.persist(myAct));
 		
 		// Add ActionViewRole
 		if (ymlAct.getRoles() != null) {
@@ -366,44 +378,14 @@ public class YAMLControlLoad implements Serializable{
 				myAVR.setMenuItem(myMenu);
 				myAVR.setRole(this.cRoles.get(this.defaultProgram +"."+ sRole.trim().toUpperCase()));
 				myAVR.setDescription("");
-				this.cActionViewRoles.put(myAVR.getDescription(), this.persist(myAVR));
+				this.cActionViewRoles.put(myAVR.getDescription(), this.connection.persist(myAVR));
 	}	}	}
 	
-	/**
-	// 2.3 Control Entities
-	public List<EntityAdm> getControlEntities() {
-		List<EntityAdm>lEnts=new ArrayList<EntityAdm>();
-		if(this.entities !=null) {
-			for (YAMLEntityAdm ymlEnt : this.entities) {
-				EntityAdm myEnt=new EntityAdm(ymlEnt.getName());
-				myEnt.setConn(ymlEnt.getConn());
-				myEnt.setIcon(ymlEnt.getIcon());
-				myEnt.setTheme(ymlEnt.getTheme());
-				lEnts.add(myEnt);
-		}	}	
-		return lEnts;
-	}
-	
-	// 2.4 Programs
-	public Set<Program> getControlPrograms() {
-		Set<Program>lProgs=new HashSet<Program>();
-		if(this.entities !=null) {
-			for (YAMLEntityAdm ymlEnt : this.entities) {
-				if(ymlEnt.getPrograms() !=null) {
-					for (YAMLProgram ymlProg: ymlEnt.getPrograms()) {
-						Program myProg=new Program (ymlProg.getName().trim().toLowerCase());
-						myProg.setIcon(ymlProg.getIcon());
-						lProgs.add(myProg);
-		}	}	}	}	
-		return lProgs;
-	}
-	
-	**/		
 	
 	// ========================================
 	// 3. Error detection
 	// ========================================
-		/**
+	/**
 		
 	// Error detection A: Duplicates
 	/**
@@ -631,6 +613,80 @@ public class YAMLControlLoad implements Serializable{
 		return myErrors;
 	}
 	
+	public String checkErrors(boolean verbose) {
+		String s="";
+		if (verbose) s=s+
+			"======================================================\n" +
+			"1. Duplicated Users:\n" + 
+			"======================================================\n";
+		this.DuplicatedUsers(s);
+		
+		if (verbose) s=s + "\n\n" + 
+			"======================================================\n" +
+			"2. Duplicated Roles:\n" + 
+			"======================================================\n";
+		this.DuplicatedRoles(s);
+		
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"3. Duplicated EntityAdm:\n" + 
+			"======================================================\n";
+		this.DuplicatedEntities(s);
+			
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"4. Duplicated EntityProgram:\n" + 
+			"======================================================\n";
+		this.DuplicatedEntityProgram(s);
+			
+		
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"5. Duplicated EntityProgramUser:\n" + 
+			"======================================================\n";
+		this.DuplicatedEntityProgramUser(s);
+			
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"6. Duplicated DefaultAction:\n" + 
+			"======================================================\n";
+		this.DuplicatedDefaultAction(s);
+			
+		
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"7. Duplicated DefaultActionRole:\n" + 
+			"======================================================\n";
+		this.DuplicatedDefaultActionRole(s);
+			
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"8. NoEntityProgramRole:\n" + 
+			"======================================================\n";
+		this.NoEntityProgramRole(s);
+		
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"9. NoDefaultActionRole:\n" + 
+			"======================================================\n";
+		this.NoDefaultActionRole(s);
+			
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"10. NoMenuItemProgram:\n" + 
+			"======================================================\n";
+		this.NoDefaultActionRole(s);
+			
+		if (verbose) s= s + "\n\n" + 
+			"======================================================\n" +
+			"11. NoMenuItemActionRole:\n" + 
+			"======================================================\n";
+		this.NoMenuItemActionRole(s);
+			
+		return s;
+	}	
+	
+		
 	public static void main(String[] args) {
 		
 		YAMLControlLoad yc=null;
@@ -655,51 +711,8 @@ public class YAMLControlLoad implements Serializable{
 		for (String s1: yc.getClassNames()) System.out.println(s1);
 		
 		//3. Test Errors
-		System.out.println("Duplicated users-------------------------");
-		String s="";
-		System.out.println(yc.DuplicatedUsers(s));
-		
-		System.out.println("Duplicated Roles-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedRoles(s));
-		
-		System.out.println("Duplicated EntityAdm-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedEntities(s));
-		
-		System.out.println("Duplicated EntityProgram-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedEntityProgram(s));
-		
-		System.out.println("Duplicated EntityProgramUser-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedEntityProgramUser(s));
-		
-		System.out.println("Duplicated DefaultAction-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedDefaultAction(s));
-		
-		System.out.println("Duplicated DefaultActionRole-------------------------");
-		s="";
-		System.out.println(yc.DuplicatedDefaultActionRole(s));
-		
-		
-		System.out.println("NoEntityProgramRole-------------------------");
-		s="";
-		System.out.println(yc.NoEntityProgramRole(s));
-		
-		System.out.println("NoDefaultActionRole-------------------------");
-		s="";
-		System.out.println(yc.NoDefaultActionRole(s));
-		
-		System.out.println("NoMenuItemProgram-------------------------");
-		s="";
-		System.out.println(yc.NoMenuItemProgram(s));
-
-		System.out.println("NoMenuItemActionRole-------------------------");
-		s="";
-		System.out.println(yc.NoMenuItemActionRole(s));
-		
+		System.out.println(yc.checkErrors(true));
+				
 		//4.- Load Control data
 		yc.Init();
 		System.out.println(yc.toString());

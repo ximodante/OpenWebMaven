@@ -1,12 +1,7 @@
 package openadmin.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
 
-import javax.persistence.Transient;
-
-import lombok.Getter;
-
+import java.time.LocalDateTime;
 /**
   * <desc>interface that stores the unique information for all classes dao</desc>
   * <responsibility>Represents a unique object</responsibility>
@@ -33,8 +28,8 @@ public interface Base extends Comparable<Base>{
 	public String getLastUser();
 	public void setLastUser(String lastUser);
 	
-	public LocalDate getData();
-	public void setData(LocalDate data);
+	public LocalDateTime getData();
+	public void setData(LocalDateTime data);
 	
 	public void setChanges(String user);
 	

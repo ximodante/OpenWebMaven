@@ -81,7 +81,8 @@ public class MenuItem extends Audit implements Base, java.io.Serializable {
 	/** attribute that contains the relationship with actionClass*/
 	@Getter @Setter
 	@ManyToOne
-	@JoinColumn(name = "nomClasse", nullable= false)
+	//@JoinColumn(name = "nomClasse", nullable= false)
+	@JoinColumn(name = "nomClasse", nullable= true)
 	private ClassName className;
 	
 	@Getter @Setter

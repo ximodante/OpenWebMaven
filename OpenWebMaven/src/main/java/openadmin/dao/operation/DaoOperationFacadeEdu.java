@@ -2,6 +2,7 @@ package openadmin.dao.operation;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -125,6 +126,14 @@ public interface DaoOperationFacadeEdu {
 	
 	//public void executeSQL (String pSentencia);
 	public void executeSQL (String pSentencia);
+	
+	/**
+	 * For loading configuration fropm a YAML file and delete older records
+	 * @param myDate
+	 */
+	public <T extends Base> void deleteOlderThan( Class<T> valueType, LocalDateTime myDate);
+	
+	public <T extends Base> T persist(T t);
 	
 	/** Getters and setters*/
 	public User getUser();

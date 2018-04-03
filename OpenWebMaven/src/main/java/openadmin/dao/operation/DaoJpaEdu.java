@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
-
-
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -680,6 +683,59 @@ public class DaoJpaEdu implements DaoOperationFacadeEdu, Serializable{
 					.getResultList()
 					.size() == 0;
 	}
-	
-	
+
+
+	@Override
+	/**
+	 * base is a class that implements Base
+	 * myDate is the LocalDateTime date parameter that specifies records to be deleted
+	 * We need to record who has deleted the file so we do not use CriteriaDelete
+	 * in https://www.thoughts-on-java.org/criteria-updatedelete-easy-way-to/
+	 */
+	public <T extends Base> void deleteOlderThan( Class<T> valueType, LocalDateTime myDate) {
+		if (myDate !=null) {
+			
+			CriteriaBuilder qb = em.getCriteriaBuilder();
+			
+			@SuppressWarnings("rawtypes")
+			CriteriaQuery cq = qb.createQuery();
+			
+			Root<T> rootBase = cq.from(valueType);
+
+			//Constructing list of parameters
+			List<Predicate> predicates = new ArrayList<Predicate>();
+
+			//Adding predicates in case of parameter not being null
+			if (myDate != null) {
+				predicates.add(
+					qb.equal(rootBase.get("data"), myDate));
+			}
+			
+			//query itself
+			cq.select(rootBase)
+	            .where(predicates.toArray(new Predicate[]{}));
+			
+			//execute query and do something with result
+			for ( T myBase : (List<T>)em.createQuery(cq).getResultList()) 
+				this.removeObject(myBase);
+		}
+	}
+	/** 
+	 * If an object exits, it is updated, else it is inserted as a new object
+	 * and return the object with the correct id
+	 */
+	public <T extends Base> T persist(T t) {
+		T obj=this.findObjectDescription(t);
+		if (obj==null) {
+			this.persistObject(t);
+			// t gets its id updated with autoincrement
+			//obj=connection.findObjectDescription(t); // NO need to get id value
+			obj=t;
+		} else {
+			t.setId(obj.getId());
+			this.updateObjectDefault(t);
+		}
+		//System.out.println(obj.toString());
+		return obj;
+	}
 }
