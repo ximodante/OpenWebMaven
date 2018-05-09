@@ -20,6 +20,7 @@ public class YAMLRole implements Serializable{
 	@Getter @Setter
 	private List<String> names = null;      // List of Role 
 	
+	
 	@Getter @Setter
 	private List<String> programs =null;    // List of programs of the Role
 	

@@ -20,7 +20,7 @@ import openadmin.web.components.JSFComponentsEdu;
 import openadmin.action.ObjectAction;
 import openadmin.annotations.Default;
 
-public class DefaultView extends ObjectAction implements Serializable, ViewFacade{
+public class DefaultViewEduOld extends ObjectAction implements Serializable, ViewFacadeEduOld{
 
 	private static final long serialVersionUID = 23031001L;
 	

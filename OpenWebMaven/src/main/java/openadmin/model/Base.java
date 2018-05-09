@@ -25,14 +25,6 @@ public interface Base extends Comparable<Base>{
 	//public void setId(Number pId);
 	public void setId(Long pId);
 	
-	public String getLastUser();
-	public void setLastUser(String lastUser);
-	
-	public LocalDateTime getData();
-	public void setData(LocalDateTime data);
-	
-	public void setChanges(String user);
-	
 	
 	/**
 	 * <desc> Accessor reading which gives us the description</desc>
@@ -61,5 +53,19 @@ public interface Base extends Comparable<Base>{
 		return getDescription().compareTo(o.getDescription());
 	
 	}
+	
+	/**
+	 * To achieve Audit methods
+	 * @return
+	 */
+	public String getLastUser();
+	public void setLastUser(String lastUser);
+	
+	public LocalDateTime getAuditData();
+	public void setAuditData(LocalDateTime data);
+	
+	public void setChanges(String user);
+	
+	
 	
 }

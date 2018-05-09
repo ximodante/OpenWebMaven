@@ -17,6 +17,8 @@
     <maven.compiler.plugin>3.7.0</maven.compiler.plugin>
     <maven.compiler.source>9</maven.compiler.source>
     <maven.compiler.target>9</maven.compiler.target>
+    
+    <hibernate.version>5.2.16.Final</hibernate.version>
   </properties>
   
   <dependencies>
@@ -134,7 +136,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.2.12.Final</version>
+      <version>${hibernate.version}</version>
     </dependency>
     
     <!-- Envers for auditing the database -->
@@ -142,7 +144,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
-      <version>5.2.12.Final</version>
+      <version>${hibernate.version}</version>
     </dependency>
     
     <!-- Hibernate Testing !!! -->
@@ -150,7 +152,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-testing</artifactId>
-      <version>5.2.12.Final</version>
+      <version>${hibernate.version}</version>
       <scope>test</scope>
     </dependency>
     
@@ -160,7 +162,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.1.4</version>
+      <version>42.2.2</version>
     </dependency>  
      
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
@@ -176,7 +178,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.0.4.Final</version>
+      <version>6.0.9.Final</version>
     </dependency>  
     
     <!--  Lombok for setters and getters -->

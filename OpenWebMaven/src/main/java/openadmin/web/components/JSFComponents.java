@@ -2,15 +2,18 @@ package openadmin.web.components;
 
 import java.io.Serializable;
 
+import javax.el.MethodExpression;
 import javax.faces.application.Application;
 import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.html.HtmlPanelGroup;
+import javax.faces.component.html.HtmlMessages;
 import javax.faces.context.FacesContext;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.inputnumber.InputNumber;
+import org.primefaces.component.commandbutton.CommandButton;
 
 
 public class JSFComponents implements Serializable{
@@ -128,5 +131,41 @@ public class JSFComponents implements Serializable{
 		panelGroup.setStyleClass(pStyleClass);
 		
 		return panelGroup;
+	}
+	
+	public HtmlMessages message01(){
+		
+		HtmlMessages message = new HtmlMessages();
+		
+		message.setStyleClass("txtRequired");
+		message.setShowDetail(true);
+		message.setShowSummary(true);
+		message.setInfoClass("txtInformation");
+		
+		return message;
+	
+	}
+	
+	//Input texte
+	public CommandButton button01(String pAction,  Class<?> typeClass){
+			
+			Application app = FacesContext.getCurrentInstance().getApplication();
+			
+			CommandButton button = (CommandButton)app.createComponent(CommandButton.COMPONENT_TYPE);
+			button.setActionExpression(createMethodExpression(pAction, null, typeClass));
+			button.setIcon("ui-icon-star");
+			button.setLabel("...");
+		    //button.setIcon("ui-icon-star");
+			button.setUpdate("form1");
+			
+			return button;
+			
+	}
+	
+	public static MethodExpression createMethodExpression(String expression, Class<?> returnType, Class<?>... parameterTypes) {
+	    FacesContext facesContext = FacesContext.getCurrentInstance();
+	    
+	    return facesContext.getApplication().getExpressionFactory().createMethodExpression(
+	        facesContext.getELContext(), expression, returnType, parameterTypes);
 	}
 }

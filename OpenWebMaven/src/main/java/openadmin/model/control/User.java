@@ -11,6 +11,8 @@ package openadmin.model.control;
 */
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -41,6 +43,7 @@ import openadmin.util.cripto.Encriptacion;
 @Table(name = "usuari", schema = "control")
 @Audited
 public class User extends Audit implements Base, java.io.Serializable {
+//public class User implements Base, java.io.Serializable {
 
 	private static final long serialVersionUID = 01011001L;
 	
@@ -52,6 +55,7 @@ public class User extends Audit implements Base, java.io.Serializable {
 	
 	/** attribute that contains the user name*/	
 	@NotNull
+	@Size(max = 15)
 	@Column(name = "usuari", unique=true, length=15)
 	@Getter @Setter
 	private String description;
@@ -89,6 +93,7 @@ public class User extends Audit implements Base, java.io.Serializable {
 	/**
 	 * 
 	 */	
+	
 	@NotNull
 	@Getter @Setter
 	@Column(name="dataAlta")
@@ -98,6 +103,7 @@ public class User extends Audit implements Base, java.io.Serializable {
 	/**
 	 * 
 	 */
+	
 	@Getter @Setter
 	@Column(name="dataBaixa")
 	private LocalDate dateEnd;
@@ -172,5 +178,36 @@ public class User extends Audit implements Base, java.io.Serializable {
 		this.identifier = pIdentifier.toUpperCase();
 	
 	}
-	
+
+	/**
+	@Override
+	public String getLastUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLastUser(String lastUser) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LocalDateTime getAuditData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAuditData(LocalDateTime data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setChanges(String user) {
+		// TODO Auto-generated method stub
+		
+	}
+	**/
 }

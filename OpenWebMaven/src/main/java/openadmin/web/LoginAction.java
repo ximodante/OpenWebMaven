@@ -80,6 +80,8 @@ public class LoginAction implements Serializable{
 		
 		else if (ctx.login(usuari)){
 			
+			System.out.println("CTX=" + ctx.toString());
+			
 			result = "main";
 		
 		}

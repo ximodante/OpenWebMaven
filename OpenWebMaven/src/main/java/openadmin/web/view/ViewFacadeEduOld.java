@@ -8,7 +8,7 @@ import openadmin.util.lang.LangTypeEdu;
 
 //import openadmin.action.ObjectActionFacade;
 
-public interface ViewFacade extends ObjectActionFacade{
+public interface ViewFacadeEduOld extends ObjectActionFacade{
 
 	/**
 	 * Get all the fields initialized

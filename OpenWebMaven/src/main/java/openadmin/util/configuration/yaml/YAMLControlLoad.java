@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -97,6 +98,7 @@ public class YAMLControlLoad implements Serializable{
 	 * Get all Role Names
 	 * @return
 	 */
+	
 	private Set<String> getRoleNames() {
 		Set<String> roleNames= new HashSet<String>();
 		for (YAMLRole ymlRol: this.roles) {
@@ -104,7 +106,9 @@ public class YAMLControlLoad implements Serializable{
 				roleNames.add(sRol.trim().toLowerCase());
 		}	}
 		return roleNames;
-	}		
+	}
+	
+	
 	
 	/**
 	 * Get all Program Names
@@ -157,7 +161,6 @@ public class YAMLControlLoad implements Serializable{
 		//1. Users
 		this.cUsers=this.getControlUsers();
 			
-		/**
 		//2. Roles
 		this.cRoles=this.getControlRoles();
 		
@@ -181,7 +184,7 @@ public class YAMLControlLoad implements Serializable{
 		connection.deleteOlderThan(MenuItem.class      , myDate);
 		connection.deleteOlderThan(ClassName.class     , myDate);
 		
-		*/
+		
 		/**
 		
 		//5. Commit connection
@@ -223,12 +226,18 @@ public class YAMLControlLoad implements Serializable{
 		HashMap<String,Role>lRoles=new HashMap<String,Role>();
 		if(this.roles !=null) {
 			for (YAMLRole ymlRole : this.roles) {
+				/*
 				for (String sRol: ymlRole.getNames()) { 
 					for (String sProg: ymlRole.getPrograms()) {
 						Role myRole=new Role(sProg.trim().toLowerCase()+ "." + sRol.trim().toUpperCase());
 						if (lRoles.get(myRole.getDescription()) == null)
 								lRoles.put(myRole.getDescription(), this.connection.persist(myRole));
-		}	}	}	}
+		}	}	}	}*/
+				for (String sRol: ymlRole.getNames()) { 
+					Role myRole=new Role(sRol.trim().toUpperCase());
+						if (lRoles.get(myRole.getDescription()) == null)
+								lRoles.put(myRole.getDescription(), this.connection.persist(myRole));
+		}	}	}	
 		return lRoles;
 	}
 	
@@ -263,7 +272,8 @@ public class YAMLControlLoad implements Serializable{
 									myAcc.setEntityAdm(myEnt);
 									myAcc.setProgram(myProg);
 									myAcc.setUser(this.cUsers.get(sUser));
-									myAcc.setRole(this.cRoles.get(myProg.getDescription().trim().toLowerCase()+"."+ymlAllow.getRole().trim().toUpperCase()));
+									//myAcc.setRole(this.cRoles.get(myProg.getDescription().trim().toLowerCase()+"."+ymlAllow.getRole().trim().toUpperCase()));
+									myAcc.setRole(this.cRoles.get(ymlAllow.getRole().trim().toUpperCase()));
 									myAcc.setDescription("");
 									System.out.println("------ACCESS: EntityAdm:" + myEnt.getDescription() + " - User:" + sUser + " - Program:"+ myProg.getDescription() + " - Role:"+ ymlAllow.getRole());
 									this.cAccesses.add(this.connection.persist(myAcc));
@@ -274,24 +284,30 @@ public class YAMLControlLoad implements Serializable{
 	}	}	}	}	}	}	}	}
 	
 	
-	// 2.4 EntityAdm & Program & Accesses
+	// 2.4 MenuItems & ClassNames & Actions
 	public void MenuItemsClassNameActions() {
 		this.defaultProgram="control";
 		this.cMenuItems =new HashMap<String,MenuItem>();
 		this.cActions   =new HashMap<String,Action>();
 		this.cClassNames=new HashMap<String,ClassName>();
+		this.cActionViewRoles=new HashMap<String,ActionViewRole>();
+		
+		Set<String> myRoles=new TreeSet<String>();
+		
 		if(this.menuItems !=null) {
 			for (YAMLMenuItem ymlMenu : this.menuItems) {
 				if (ymlMenu.getViewType().trim().toLowerCase().equals("submenu")) {
-					SubMenuItemsClassNameActionsPriv(ymlMenu, null);
+					myRoles =this.SubMenuItemsClassNameActionsPriv(ymlMenu, null, myRoles);
 				} else {
-					MenuItemsClassNameActionsPriv(ymlMenu, null);
+					myRoles = MenuItemsClassNameActionsPriv(ymlMenu, null, myRoles);
 	}	}	}	} 
 	
 	//2.4.1 SubMenu MenuItems
-	private void SubMenuItemsClassNameActionsPriv(YAMLMenuItem ymlMenu, MenuItem parent ) {
+	private Set<String> SubMenuItemsClassNameActionsPriv(YAMLMenuItem ymlMenu, MenuItem parent, Set<String> myParentRoles ) {
 		MenuItem myMenu=new MenuItem();
 		ClassName myClass=new ClassName();
+		
+		Set<String> myRoles=new TreeSet<String>();
 		
 		if (ymlMenu.getProgram().trim().length()>0) 
 			this.defaultProgram=ymlMenu.getProgram().trim().toLowerCase();
@@ -307,21 +323,38 @@ public class YAMLControlLoad implements Serializable{
 		myMenu.setOrden(this.orden++);
 		myMenu.setTypeNode("p");
 		myMenu.setViewType(ymlMenu.getViewType());
-		myMenu.setDescription((myClass.getDescription().trim() + "_" + ymlMenu.getViewType().trim()).replaceAll("\\.", "_").toLowerCase());
+		String mySuffix=ymlMenu.getViewType().trim().toLowerCase();
+		myMenu.setDescription((myClass.getDescription().trim() + "_" + mySuffix).replaceAll("\\.", "_").toLowerCase());
 		this.cMenuItems.put(myMenu.getDescription(), this.connection.persist(myMenu));
+		
+		
+		
 		if(ymlMenu.getMenuItems() !=null) {
 			for (YAMLMenuItem ymlMenu1 : ymlMenu.getMenuItems()) {
-				if (ymlMenu.getViewType().trim().toLowerCase().equals("submenu")) {
-					SubMenuItemsClassNameActionsPriv(ymlMenu1, myMenu);
-				} else if (ymlMenu.getViewType().trim().toLowerCase().equals("action")) {
-					MenuItemsClassNameActionsPriv(ymlMenu1, myMenu);
+				if (ymlMenu1.getViewType().trim().toLowerCase().equals("submenu")) {
+					myRoles=SubMenuItemsClassNameActionsPriv(ymlMenu1, myMenu, myRoles);
+				} else if (ymlMenu1.getViewType().trim().toLowerCase().equals("action")) {
+					myRoles=MenuItemsClassNameActionsPriv(ymlMenu1, myMenu, myRoles);
 				} else {	
-					MenuItemsClassNameActionsPriv(ymlMenu1, myMenu);
-	}	}	}	}	
+					myRoles=MenuItemsClassNameActionsPriv(ymlMenu1, myMenu, myRoles);
+		}	}	}
+		
+		//Submenu Gets roles from children. All the roles of the children can access a parent submenu
+		List<String> lRol=new ArrayList<String>(myRoles);
+				
+		//Add Submenu action
+		YAMLAction ymlAct=new YAMLAction();
+		ymlAct.setName("submenu");
+		ymlAct.setGroup(0); // No matter the group value as there is only 1 action
+		ymlAct.setRoles(lRol);
+		myParentRoles= this.setMyActions(ymlAct, myClass, myMenu, myParentRoles);
+		
+		return myParentRoles;
+	}	
 		
 	
 	//2.4.2 Simple MenuItems
-	private void MenuItemsClassNameActionsPriv(YAMLMenuItem ymlMenu, MenuItem parent) {
+	private Set<String> MenuItemsClassNameActionsPriv(YAMLMenuItem ymlMenu, MenuItem parent, Set<String> myParentRoles ) {
 		
 		MenuItem myMenu=new MenuItem();
 		ClassName myClass=new ClassName();
@@ -338,33 +371,53 @@ public class YAMLControlLoad implements Serializable{
 		myMenu.setIcon(ymlMenu.getIcon());
 		myMenu.setParent(parent);
 		myMenu.setOrden(this.orden++);
-		myMenu.setTypeNode(ymlMenu.getViewType());
-		myMenu.setDescription((myClass.getDescription().trim() + "_" + ymlMenu.getViewType().trim()).replaceAll(".", "_").toLowerCase());
+		//myMenu.setTypeNode(ymlMenu.getViewType());
+		myMenu.setTypeNode("c");
+		myMenu.setViewType(ymlMenu.getViewType());
+		
+		String mySuffix=ymlMenu.getViewType().trim();
+		// On action menuitems the suffix is the action name
+		//   and viewType is ":" + action name        
+		if (ymlMenu.getViewType().trim().equalsIgnoreCase("action")) {
+			mySuffix=ymlMenu.getActions().get(0).getName().trim();
+			myMenu.setViewType(":" + mySuffix); 
+		}
+		myMenu.setDescription((myClass.getDescription().trim() + "_" + mySuffix).replaceAll("\\.", "_").toLowerCase());
+		
+		
+		//myMenu.setDescription((myClass.getDescription().trim() + "_" + ymlMenu.getViewType().trim()).replace(".", "_").toLowerCase());
 		this.cMenuItems.put(myMenu.getDescription(), this.connection.persist(myMenu));
 		
-		// Add default actions
-		if(ymlMenu.isDefaultActions() ) 
-			this.setMyDefaultActions(ymlMenu, myClass, myMenu);
+		// Add default actions only if viewType is not action nor submenu
+		if(ymlMenu.isDefaultActions() && 
+		   !ymlMenu.getViewType().trim().equalsIgnoreCase("action") && 
+		   !ymlMenu.getViewType().trim().equalsIgnoreCase("submenu")) 
+			myParentRoles=this.setMyDefaultActions(ymlMenu, myClass, myMenu, myParentRoles);
 		
 		//Add other actions
 		if (ymlMenu.getActions() != null) {
 			for (YAMLAction ymlAct: ymlMenu.getActions()) {
-				setMyActions(ymlAct, myClass, myMenu);
-	}	}	}	
+				myParentRoles=this.setMyActions(ymlAct, myClass, myMenu, myParentRoles);
+		}	}
+		return myParentRoles;
+	}	
 		
 	// 2.4.3 Retrieve Default Actions
-	private void setMyDefaultActions(YAMLMenuItem ymlMenu, ClassName myClass, MenuItem myMenu) {
+	private Set<String> setMyDefaultActions(YAMLMenuItem ymlMenu, ClassName myClass, MenuItem myMenu, Set<String> myParentRoles) {
 		if (ymlMenu.isDefaultActions()) {
 			if (this.getDefaultActions() != null) {
 				for (YAMLAction ymlAct: this.getDefaultActions() ) {
-					setMyActions(ymlAct, myClass, myMenu);
-	}	}	}	}
+					myParentRoles=this.setMyActions(ymlAct, myClass, myMenu, myParentRoles);
+		}	}	}	
+		return myParentRoles;
+	}
 		
 	//2.4.4 Create Actions and ActionviewRole
-	private void setMyActions(YAMLAction ymlAct, ClassName myClass, MenuItem myMenu) {
+	private Set<String> setMyActions(YAMLAction ymlAct, ClassName myClass, MenuItem myMenu, Set<String> myParentRoles) {
 		// Add action
 		Action myAct=new Action (); 
-		myAct.setDescription((myClass.getDescription().trim() + "_" + ymlAct.getName()).trim().replace(".", "_").toLowerCase());
+		//myAct.setDescription((myClass.getDescription().trim() + "_" + ymlAct.getName()).trim().replace(".", "_").toLowerCase());
+		myAct.setDescription((myClass.getDescription().trim() + "_" + ymlAct.getName()).trim().toLowerCase());
 		myAct.setClassName(myClass);
 		myAct.setGrup(ymlAct.getGroup());
 		myAct.setIcon(ymlAct.getIcon());
@@ -373,13 +426,21 @@ public class YAMLControlLoad implements Serializable{
 		// Add ActionViewRole
 		if (ymlAct.getRoles() != null) {
 			for (String sRole: ymlAct.getRoles()) {
-				ActionViewRole myAVR = new ActionViewRole();
-				myAVR.setAction(myAct);
-				myAVR.setMenuItem(myMenu);
-				myAVR.setRole(this.cRoles.get(this.defaultProgram +"."+ sRole.trim().toUpperCase()));
-				myAVR.setDescription("");
-				this.cActionViewRoles.put(myAVR.getDescription(), this.connection.persist(myAVR));
-	}	}	}
+				//String roleDesc=this.defaultProgram +"."+ sRole.trim().toUpperCase();
+				String roleDesc=sRole.trim().toUpperCase();
+				Role myRole=this.cRoles.get(roleDesc);
+				// If the role exists for this program
+				if (myRole!=null) {
+					ActionViewRole myAVR = new ActionViewRole();
+					myAVR.setAction(myAct);
+					myAVR.setMenuItem(myMenu);
+					myAVR.setRole(myRole);
+					myAVR.setDescription("");
+					this.cActionViewRoles.put(myAVR.getDescription(), this.connection.persist(myAVR));
+					myParentRoles.add(sRole);
+		}	}	}
+		return myParentRoles;
+	}
 	
 	
 	// ========================================

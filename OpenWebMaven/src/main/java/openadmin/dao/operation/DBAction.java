@@ -19,6 +19,8 @@ public enum DBAction {
 	SQL_SOME,
 	BEGIN_TRANS, 
 	COMMIT_TRANS, 
-	ROLL_BACK_TRANS
+	ROLL_BACK_TRANS,
 	
+	
+	// Other actions
 }

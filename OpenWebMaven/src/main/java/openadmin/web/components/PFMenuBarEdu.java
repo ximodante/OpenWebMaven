@@ -2,43 +2,31 @@ package openadmin.web.components;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.primefaces.component.menubar.Menubar;
 import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.primefaces.component.commandbutton.CommandButton;
-import org.primefaces.component.toolbar.Toolbar;
-import org.primefaces.component.toolbar.ToolbarGroup;
+import org.primefaces.model.menu.MenuModel;
 
 import openadmin.model.control.Access;
+import openadmin.model.control.Action;
 import openadmin.model.control.EntityAdm;
-//import openadmin.model.control.Action;
-//import openadmin.model.control.DatabaseConnection;
-import openadmin.model.control.Role;
 import openadmin.util.lang.LangTypeEdu;
 
 
-public class PFMenuBar implements Serializable{
+public class PFMenuBarEdu implements Serializable{
 	
 	private static final long serialVersionUID = 9081501L;
 	
 	private LangTypeEdu langType;
 	
 	
-	public PFMenuBar (LangTypeEdu pLangType) {
+	public PFMenuBarEdu (LangTypeEdu pLangType) {
 		
 		langType = pLangType;
+		System.out.println("KKKK lenguaje=" + langType.getLang());
 	}
 	
 	/**
@@ -105,12 +93,14 @@ public class PFMenuBar implements Serializable{
 		DefaultSubMenu subMenu = new DefaultSubMenu(langType.msgGenerals(head));
 		
 		for (EntityAdm enti: listEntities) {
-			System.out.println("Entitat..=" + enti.getDescription());
+			
 			String pValorItem = langType.msgGenerals(enti.getDescription());
 			DefaultMenuItem item = new DefaultMenuItem(pValorItem); 
 			item.setIcon(enti.getIcon());
 			item.setId("" + enti.getId());
-			//item.setCommand("#{main.loadMenuItems(" + Integer.parseInt(item.getId()) + ",'"  + item.getValue() + "')}");
+			//item.setCommand("#{main.loadMenuItems(" + item.getId() + ","  + item.getValue() + ")}");
+			//item.setCommand("#{main.loadMenuItems(1,1)}");
+			
 			subMenu.addElement(item);
 		}
 		
@@ -151,6 +141,45 @@ public class PFMenuBar implements Serializable{
 		return subMenu;
 		
 	}
+	
+	public Menubar menuAccions(Integer view, List<Action> pLstAction){
+		
+		Menubar menuBar = new Menubar();
+		
+		MenuModel menuModel = new DefaultMenuModel();
+		
+		DefaultMenuItem item = null;
+		
+		String label;
+		
+		for (Action ac: pLstAction){
+			
+			label = ac.getDescription().substring(ac.getDescription().lastIndexOf("_")+1);
+			
+			item = new DefaultMenuItem(langType.msgActions(label)); 
+			item.setId("" + ac.getId());
+			item.setCommand("#{ctx.getView(" + view + ")." + ac.getDescription().substring(ac.getDescription().indexOf("_")).trim() + "()}");
+			item.setUpdate("form1:idContingut");
+			menuModel.addElement(item);
+			
+		}
+		
+		if (view > 1){
+			
+			item = new DefaultMenuItem(langType.msgActions("exit"));
+			item.setId("iditemexit");
+			item.setCommand("#{ctx.getView(" + view + ")._exit()}");
+			//item.setCommand("#{main._exit()}");
+			item.setUpdate("form1:idContingut");
+			menuModel.addElement(item);
+		}
+		
+		menuBar.setModel(menuModel);
+			
+		return menuBar;
+		
+	}
+	
 	
 	/**
 	 * <desc>class that generates the applications submenu</desc>

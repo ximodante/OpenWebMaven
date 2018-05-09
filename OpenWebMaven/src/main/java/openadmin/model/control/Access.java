@@ -34,6 +34,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import openadmin.annotations.Default;
+import openadmin.annotations.OpenScreen;
 import openadmin.model.Base;
 import openadmin.model.Audit;
 @Entity
@@ -66,11 +67,13 @@ public class Access extends Audit implements Base, java.io.Serializable {
 	@Getter @Setter
 	@ManyToOne
 	@JoinColumn(name = "programa", nullable= false)
+	@OpenScreen(normal=true)
 	private Program program;
 	
 	@Getter @Setter
 	@ManyToOne
 	@JoinColumn(name = "role", nullable= false)
+	@OpenScreen(normal=true)
 	private Role role;
 	
 	/** attribute that contain the relationship with user*/

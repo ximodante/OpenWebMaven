@@ -27,8 +27,7 @@ import openadmin.dao.operation.DaoOperationFacadeEdu;
 import openadmin.model.control.Access;
 
 import openadmin.model.control.EntityAdm;
-
-
+import openadmin.model.control.Role;
 import openadmin.model.control.User;
 import openadmin.util.configuration.FirstControlLoadEdu;
 import openadmin.util.configuration.FirstControlLoadYAML;
@@ -40,7 +39,7 @@ import openadmin.util.lang.LangTypeEdu;
 import openadmin.util.lang.WebMessages;
 
 
-import openadmin.web.view.ViewFacade;
+import openadmin.web.view.ViewFacadeEdu;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -50,9 +49,11 @@ import javax.inject.Named;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Named(value = "ctx")
 @SessionScoped
+@ToString
 public class ContextActionEdu implements Serializable {
 
 	private static final long serialVersionUID = 21100901L;
@@ -86,7 +87,7 @@ public class ContextActionEdu implements Serializable {
 	//private Role rolDefault = null;
 	
 	/** Field that contain the list of actions*/
-	private Map<Integer, ViewFacade> lstView = new HashMap<Integer, ViewFacade>();
+	private Map<Integer, ViewFacadeEdu> lstView = new HashMap<Integer, ViewFacadeEdu>();
 	
 	/** Field that contain the user*/
 	@Getter @Setter
@@ -101,6 +102,9 @@ public class ContextActionEdu implements Serializable {
 	*/
 	@Inject
 	private LangTypeEdu langType;
+	
+	@Getter @Setter
+	private Role activeRol;
 	
 	@PostConstruct
 	public void initEdu () {
@@ -124,12 +128,10 @@ public class ContextActionEdu implements Serializable {
 			log = new LogDaoEdu(connLog, "clientweb", langType);
 			*/
 			//connection
-			System.out.println("-99.3 connect before DaoJpaEdu control_post");
 			connControl = new DaoJpaEdu(user, "control_post", (short)0, langType);
-			System.out.println("-99.2 connect after DaoJpaEdu control_post");
 			connControl.setEnvironment(TypeEnvironment.WEB);
 			connected = true;
-			System.out.println("-99.1 connect after connected=true");
+		
 		}
 		
 	}
@@ -145,12 +147,10 @@ public class ContextActionEdu implements Serializable {
 		user.setFirma(false);
 		
 		// Open JPA db connections if closed
-		System.out.println("-100 login before connect");
 		this.connect();
-		System.out.println("-99 login after connect");
 		
 		user=CollectionUtilsEdu.get(connControl.findObjects(user),0);
-		System.out.println("-98 login after collectionutils");		
+		
 		try {
 			
 			if (null != user) {
@@ -424,13 +424,13 @@ public class ContextActionEdu implements Serializable {
 	*/
 	
 	//Work view
-	public ViewFacade getView(Integer key) {
+	public ViewFacadeEdu getView(Integer key) {
 		
 		return lstView.get(key);
 	
 	}
 
-	public void setView(Integer key, ViewFacade pVista) {
+	public void setView(Integer key, ViewFacadeEdu pVista) {
 		
 		lstView.put(key, pVista);
 		

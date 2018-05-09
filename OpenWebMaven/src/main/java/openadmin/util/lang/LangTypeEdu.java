@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import lombok.Setter;
+import lombok.Getter;
 import openadmin.util.configuration.TypeLanguages;
 
 @Named (value = "lang")
@@ -33,7 +34,7 @@ public class LangTypeEdu implements Serializable {
 	private static Map<String,Object> countries;
 	
 	/** Field that contain the working language*/
-	@Setter
+	@Setter @Getter
 	private String lang = "es";
 	
 	/** Field that contain the working language log*/

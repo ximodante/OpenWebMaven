@@ -697,18 +697,20 @@ public class DaoJpaEdu implements DaoOperationFacadeEdu, Serializable{
 			
 			CriteriaBuilder qb = em.getCriteriaBuilder();
 			
-			@SuppressWarnings("rawtypes")
-			CriteriaQuery cq = qb.createQuery();
+			//@SuppressWarnings("rawtypes")
+			CriteriaQuery<T> cq = qb.createQuery(valueType);
 			
+			//if (valueType.isAssignableFrom(Audit))
 			Root<T> rootBase = cq.from(valueType);
-
+			
 			//Constructing list of parameters
 			List<Predicate> predicates = new ArrayList<Predicate>();
 
 			//Adding predicates in case of parameter not being null
 			if (myDate != null) {
 				predicates.add(
-					qb.equal(rootBase.get("data"), myDate));
+					qb.lessThan(rootBase.get("auditData"), myDate));
+					
 			}
 			
 			//query itself
@@ -716,7 +718,7 @@ public class DaoJpaEdu implements DaoOperationFacadeEdu, Serializable{
 	            .where(predicates.toArray(new Predicate[]{}));
 			
 			//execute query and do something with result
-			for ( T myBase : (List<T>)em.createQuery(cq).getResultList()) 
+			for ( T myBase : (List<T>)em.createQuery(cq).getResultList())
 				this.removeObject(myBase);
 		}
 	}

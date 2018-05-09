@@ -29,7 +29,7 @@ roles:    # Combination of applications and roles
   - { names: [ADMIN],                         programs: [ control] }
   - { names: [ADMIN, A-USER, B-USER, C-USER], programs: [ policia,  tercers, vehicles ] }
   - { names: [OTHER],                         programs: [ tercers] } 
-#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------  
 # 5. ACCESS to programs in entities                        
 entities: 
   #---------------------------------------------------------------------------------------------------------------
@@ -37,22 +37,37 @@ entities:
   #---------------------------------------------------------------------------------------------------------------
             programs: [ { name: control,       icon: fa-cog,   alloweds: [ { role: ADMIN,    users: [root, alfred] } ] } ] }
        
-  #---------------------------------------------------------------------------------------------  
+  #---------------------------------------------------------------------------------------------------------------
+  - { name: town_hall,  conn: ayto_post,       icon: fa-institution, theme: ajuntament,         
+  #---------------------------------------------------------------------------------------------------------------
+            programs: [ { name: policia,       icon: fa-ambulance,    
+                          alloweds: [ { role: ADMIN,     users: [root, alfred] } ,
+                                      { role: A-USER,    users: [pol-01]       } ,
+                                      { role: C-USER,    users: [pepet]        } ] } ,
+                        #---------------------------------------------------------------------       
+                        { name: tercers,   icon: fa-users, 
+                        
+                          alloweds: [ { role: ADMIN,     users: [root, alfred] } ,
+                                      { role: C-USER,    users: [pol-01]       } ,        
+                                      { role: B-USER,    users: [pepet]        } ] } ,  
+                        #---------------------------------------------------------------------       
+                        { name: vehicles,  icon: fa-users, 
+                          alloweds: [ { role: ADMIN,     users: [root, alfred] } ,
+                                      { role: C-USER,    users: [pol-01]       } ,        
+                                      { role: B-USER,    users: [pepet]        } ] } ] }
+#---------------------------------------------------------------------------------------------  
 # 6. DEFAULT ACTION parameters values
 defaultActions: 
   - { name: New,    icon: fa-plus,       roles: [ADMIN, A-USER, B-USER]         }
   - { name: Edit,   icon: fa-edit,       roles: [ADMIN, A-USER]                 }
   - { name: Copy,   icon: fa-copy,       roles: [ADMIN, A-USER, B-USER]         }
   - { name: Delete, icon: fa-trash,      roles: [ADMIN, A-USER]                 }
-  - { name: Search, icon: fa-binoculars, roles: [ADMIN, A-USER, B-USER, C-USER] } 
-          
+  - { name: Search, icon: fa-binoculars, roles: [ADMIN, A-USER, B-USER, C-USER] }         
 #---------------------------------------------------------------------------------------------  
 # 7. MENUITEMS (Form & Actions)
 menuItems: 
   # In program control, only ADMIN rol can access, so no need to show actions, using default actions
   #    as only user that belongs both to entities and default actions can access menus.
-  #
-  # If menuItem.viewType is submenu or action, defaultActions are not taken into consideration.
   #----------------------------------------------------------------------------------------------------------------------------------
   - { program: control , className: openadmin.model.control.Administracion,                 icon: fa-folder,   viewType: submenu,
                #---------------------------------------------------------------------------------------------------------------------
@@ -61,15 +76,39 @@ menuItems:
                             { className: openadmin.model.control.Program,                   icon: fa-gears                           } ,
                             { className: openadmin.model.control.Role,                      icon: fa-graduation-cap                  } ,
                             { className: openadmin.model.control.Access,                    icon: fa-key,                            } ,
-                            { className: openadmin.model.control.Action,                    icon: fa-bolt,                           } ,
-                            { className: openadmin.model.control.ClassName,                 icon: fa-file-o,                         } ,
                             { className: openadmin.model.control.MenuItem,                  icon: fa-th-list,  viewType: custom      } ,
-                            { className: openadmin.model.control.ActionViewRole,            icon: fa-th-list                         } , 
-                            { className: openadmin.util.configuration.FirstControlLoadYAML, icon: fa-upload,   viewType: action,  
+                            { className: openadmin.model.control.ActionViewRole,            icon: fa-th-list        } , 
+                            { className: openadmin.util.configuration.FirstControlLoadYAML, icon: fa-upload,   viewType: action, defaultActions: false, 
                                          #------------------------------------------------------------------------------------------
                                          actions: [ { name: dataLoad,  roles: [ ADMIN] } ]
                                          #------------------------------------------------------------------------------------------
                             } ] }   
                           
   #----------------------------------------------------------------------------------------------------------------------------------
-  
+  - { program: policia,  className: openadmin.model.control.Administracion1,     icon: fa-gear,     viewType: submenu,
+               #---------------------------------------------------------------------------------------------------------------------
+               menuItems: [ { className: openadmin.model.police.Agent,           icon: fa-user,           } ,
+                            { className: openadmin.model.police.Vehicles,        icon: fa-car,            } ] }
+  #----------------------------------------------------------------------------------------------------------------------------------
+  - {                    className: openadmin.model.control.Administracion2,     icon: fa-calendar, viewType: submenu,     
+               #---------------------------------------------------------------------------------------------------------------------
+               menuItems: [ { className: openadmin.model.police.Actions,         icon: fa-user,           defaultActions: true,  
+                                         #------------------------------------------------------------------------------------------
+                                         actions: [ { name: complusar, roles: [ ADMIN, A-USER],                 icon: fa-bullseye },
+                                                    { name: ok,        roles: [ ADMIN, A-USER, B-USER, C-USER], icon: fa-eye      } ]
+                                         #------------------------------------------------------------------------------------------             
+                            } ] }
+  #----------------------------------------------------------------------------------------------------------------------------------
+  - { program: tercers,  className: openadmin.model.control.Administracion3,   icon: fa-gear,     viewType: submenu,
+               #---------------------------------------------------------------------------------------------------------------------
+               menuItems: [ { className: openadmin.model.tercer.Persona,         icon: fa-file,           defaultActions: true } ] } 
+   
+  #----------------------------------------------------------------------------------------------------------------------------------
+  - { program: vehicles, className: openadmin.model.control.Administracion4,   icon: fa-gear,     viewType: submenu,
+               #---------------------------------------------------------------------------------------------------------------------
+               menuItems: [ { className: openadmin.model.vehicle.Marca,          icon: fa-file,           defaultActions: true } ] } 
+                
+                            
+  #---------------------------------------------------------------------------------------------  
+
+

@@ -93,6 +93,7 @@ public class MenuItem extends Audit implements Base, java.io.Serializable {
 	public void setDescription(String pDescription) {
 				
 		this.description = pDescription.toLowerCase().replace(".", "_");
+		System.out.println("MenuItem:" + this.description);
 	}
 	
 	@Override
